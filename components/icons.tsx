@@ -67,6 +67,26 @@ export const Icons = {
       ></path>
     </svg>
   ),
+  google: ({ ...props }: LucideProps) => (
+
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      data-prefix="fab"
+      data-icon="Google"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      width="15"
+      height="15"
+      viewBox="0 0 18 18"
+      {...props}
+    >
+      <path
+        d="M9.001 10.71V7.362h8.424c.126.567.225 1.098.225 1.845 0 5.139-3.447 8.793-8.64 8.793-4.968 0-9-4.032-9-9s4.032-9 9-9c2.43 0 4.464.891 6.021 2.349l-2.556 2.484c-.648-.612-1.782-1.332-3.465-1.332-2.979 0-5.409 2.475-5.409 5.508s2.43 5.508 5.409 5.508c3.447 0 4.716-2.385 4.95-3.798H9.001v-.009z"
+        fillOpacity=".4"
+      />
+    </svg>
+  ),
   twitter: Twitter,
   check: Check,
 }

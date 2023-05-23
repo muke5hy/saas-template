@@ -1,13 +1,15 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Account {
@@ -48,19 +50,30 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          UserRole
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @default(now()) @map(name: "updated_at")
 
-  accounts Account[]
-  sessions Session[]
-  Post     Post[]
+  accounts     Account[]
+  sessions     Session[]
+  Post         Post[]
+  Subscription Subscription?
+  Invoice      Invoice[]
 
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  @@map(name: "users")
+}
+
+model Subscription {
+  id                     String    @id @default(cuid())
+  stripeCustomerId       String    @unique @map(name: "stripe_customer_id")
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  userId                 String    @unique
 
-  @@map(name: "users")
+  user User @relation(fields: [userId], references: [id])
+
+  @@map(name: "subscriptions")
 }
 
 model VerificationToken {
@@ -84,4 +97,15 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
 
   @@map(name: "posts")
+}
+
+model Invoice {
+  id     String   @id @default(cuid())
+  amount Float
+  date   DateTime
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map(name: "invoices")
 }
