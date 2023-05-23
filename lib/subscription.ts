@@ -7,33 +7,30 @@ import { db } from "@/lib/db"
 export async function getUserSubscriptionPlan(
   userId: string
 ): Promise<UserSubscriptionPlan> {
-  const user = await db.user.findFirst({
+  const subscription = await db.user.findUnique({
     where: {
       id: userId,
     },
     select: {
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
+      Subscription: true,
     },
-  })
+  });
 
-  if (!user) {
+  if (!subscription) {
     throw new Error("User not found")
   }
 
   // Check if user is on a pro plan.
   const isPro =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now()
+    subscription.stripePriceId &&
+    subscription.stripeCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now()
 
   const plan = isPro ? proPlan : freePlan
 
   return {
     ...plan,
-    ...user,
-    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
+    ...subscription,
+    stripeCurrentPeriodEnd: subscription.stripeCurrentPeriodEnd?.getTime(),
     isPro,
   }
 }

@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
+        // Add logic here to look up the user from the credentials supplied, convert it into direct db call
         const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           headers: {
